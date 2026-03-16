@@ -20,6 +20,8 @@ public class MvcConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         // 用order设定执行先后顺序，order数值越小越先执行，默认按照添加顺序执行
+        // 默认拦截所有请求，token刷新拦截器
+        registry.addInterceptor(new RefreshTokenInterceptor(stringRedisTemplate)).order(0);
         // 登录拦截器
         registry.addInterceptor(new LoginInterceptor())
                 .excludePathPatterns(
@@ -31,8 +33,7 @@ public class MvcConfig implements WebMvcConfigurer {
                         "/shop-type/**",
                         "/upload/**"
                 ).order(1);
-        // 默认拦截所有请求，token刷新拦截器
-        registry.addInterceptor(new RefreshTokenInterceptor(stringRedisTemplate)).order(0);
+
         WebMvcConfigurer.super.addInterceptors(registry);
     }
 }

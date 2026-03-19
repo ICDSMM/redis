@@ -38,8 +38,9 @@ public class VoucherController {
      * 新增秒杀券
      * @param voucher 优惠券信息，包含秒杀信息
      * @return 优惠券id
+     * 秒杀券只有在活动时间才显示，添加时避免日期过期
      */
-    @PostMapping("seckill")
+    @PostMapping("/seckill")
     public Result addSeckillVoucher(@RequestBody Voucher voucher) {
         voucherService.addSeckillVoucher(voucher);
         return Result.ok(voucher.getId());

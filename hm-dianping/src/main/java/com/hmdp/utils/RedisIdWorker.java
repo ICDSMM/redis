@@ -20,6 +20,10 @@ public class RedisIdWorker {
     @Resource
     private StringRedisTemplate stringRedisTemplate;
 
+    public RedisIdWorker(StringRedisTemplate stringRedisTemplate) {
+        this.stringRedisTemplate = stringRedisTemplate;
+    }
+
     /**
      * id生成器
      * @param keyPrefix
@@ -42,6 +46,7 @@ public class RedisIdWorker {
         return timeStamp << COUNT_BITS | count;
     }
 
+/*
     public static void main(String[] args) {
         // 指定初始时间
         LocalDateTime time = LocalDateTime.of(2022, 1, 1, 0, 0, 0);
@@ -49,5 +54,6 @@ public class RedisIdWorker {
         long second = time.toEpochSecond(ZoneOffset.UTC);
         System.out.println("second ="+ second);
     }
+*/
 
 }

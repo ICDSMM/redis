@@ -5,7 +5,6 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 
-import javax.annotation.Resource;
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
@@ -13,9 +12,12 @@ public class SimpleRedisLock implements ILock{
 
     // 锁的名称
     private String name;
-
-    @Resource
     private StringRedisTemplate stringRedisTemplate;
+
+    public SimpleRedisLock(String name, StringRedisTemplate stringRedisTemplate) {
+        this.name = name;
+        this.stringRedisTemplate = stringRedisTemplate;
+    }
 
     private static final String KEY_PREFIX = "lock:";
 
@@ -33,12 +35,6 @@ public class SimpleRedisLock implements ILock{
         UNLOCK_SCRIPT.setLocation(new ClassPathResource("unlock.lua"));
         // 明确指定脚本执行后返回的Java类型为Long
         UNLOCK_SCRIPT.setResultType(Long.class);
-    }
-
-
-    public SimpleRedisLock(String name, StringRedisTemplate stringRedisTemplate) {
-        this.name = name;
-        this.stringRedisTemplate = stringRedisTemplate;
     }
 
     /**

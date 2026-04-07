@@ -9,6 +9,7 @@ import com.hmdp.dto.LoginFormDTO;
 import com.hmdp.dto.Result;
 import com.hmdp.dto.UserDTO;
 import com.hmdp.entity.User;
+import com.hmdp.log.BizLog;
 import com.hmdp.mapper.UserMapper;
 import com.hmdp.service.IUserService;
 import com.hmdp.utils.RegexUtils;
@@ -41,6 +42,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     private StringRedisTemplate stringRedisTemplate;
 
     @Override
+    @BizLog("发送登录验证码")
     public Result sendCode(String phone, HttpSession session) {
         // 1. 校验手机号
         boolean phoneInvalid = RegexUtils.isPhoneInvalid(phone);
@@ -60,6 +62,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     @Override
+    @BizLog("用户登录")
     public Result login(LoginFormDTO loginForm, HttpSession session) {
         // 1. 校验手机号
         String phone = loginForm.getPhone();
@@ -86,7 +89,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         String token = UUID.randomUUID().toString(true);
         // 8.2将User对象转为hash(Map)存储
         UserDTO userDTO = BeanUtil.copyProperties(user, UserDTO.class);
-        Map<String, Object> userMap = BeanUtil.beanToMap(userDTO,new HashMap<>(), CopyOptions.create().setIgnoreNullValue(true).setFieldValueEditor((fieldName,fieldValue)->fieldValue.toString()));
+        Map<String, Object> userMap = BeanUtil.beanToMap(userDTO,new HashMap<>(),
+                CopyOptions.create()
+                        .setIgnoreNullValue(true)
+                        .setFieldValueEditor((fieldName,fieldValue)
+                                ->fieldValue.toString()));
         // 8.3存储 opsForHash().putAll()避免与服务器做多次交互，存的时候不允许设置有效期
         String tokenKey = LOGIN_USER_KEY + token;
         stringRedisTemplate.opsForHash().putAll(tokenKey,userMap);

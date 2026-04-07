@@ -40,7 +40,7 @@ public class VoucherController {
      * @return 优惠券id
      * 秒杀券只有在活动时间才显示，添加时避免日期过期
      */
-    @PostMapping("/seckill")
+    @PostMapping("seckill")
     public Result addSeckillVoucher(@RequestBody Voucher voucher) {
         voucherService.addSeckillVoucher(voucher);
         return Result.ok(voucher.getId());

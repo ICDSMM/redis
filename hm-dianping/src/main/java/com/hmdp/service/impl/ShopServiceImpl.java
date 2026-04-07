@@ -5,6 +5,7 @@ import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hmdp.dto.Result;
 import com.hmdp.entity.Shop;
+import com.hmdp.log.BizLog;
 import com.hmdp.mapper.ShopMapper;
 import com.hmdp.service.IShopService;
 import com.hmdp.utils.CacheClient;
@@ -43,6 +44,7 @@ public class ShopServiceImpl extends ServiceImpl<ShopMapper, Shop> implements IS
      * @return
      */
     @Override
+    @BizLog("查询店铺详情")
     public Result queryById(Long id) {
         // 缓存穿透
         // Shop shop = queryWithPassThrough(id);
@@ -219,6 +221,7 @@ public class ShopServiceImpl extends ServiceImpl<ShopMapper, Shop> implements IS
      */
     @Override
     @Transactional
+    @BizLog("更新店铺信息")
     public Result update(Shop shop) {
         Long id = shop.getId();
         if(id == null){
